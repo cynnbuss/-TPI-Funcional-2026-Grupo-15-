@@ -37,3 +37,24 @@
        (list color-actual (accion-color cambiar-a))
       (list color-actual 'accion-por-defecto)))
 
+
+
+
+
+;;=================================================
+;;REQUERIMIENTO 6: Informe de Distribución Temporal 
+;;=================================================
+
+
+
+;;=============================================================
+;;FUNCION:calcular-porcentaje
+;;NATURALEZA:Pura(Calculo matematico sin efectos colaterales)
+;;ESTRATEGIA:Condicional plana
+;;IMPACTO:No destructiva 
+;;=============================================================
+
+(defun calcular-porcentaje(tiempo-color total)
+(if(> total 0)
+   (*(/tiempo-color total)100.0)
+   0))
