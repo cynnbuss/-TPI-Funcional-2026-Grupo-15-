@@ -95,6 +95,29 @@
 
 
 
+;; REQUERIMIENTO 4: ANÁLISIS DE EFICIENCIA Y PSICOLOGÍA
+;; ============================================================
+
+;; ============================================================
+;; FUNCIÓN: duracion-ciclo
+;; NATURALEZA: Pura (Retorna siempre el mismo análisis para una densidad dada)
+;; ESTRATEGIA DE CONTROL: Condicional con Let*
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+
+(defun duracion-ciclo (densidad-trafico)
+
+(let* ((t-rojo 30)
+(t-amarillo 5)
+(t-verde (if (equal densidad-trafico 'ALTA) 45 20))
+(total (+ t-rojo t-verde t-amarillo)))
+(list total
+(cond
+;; Rango óptimo
+((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
+((< total 35) 'DURACION-SUBOPTIMA-BAJA)
+(t 'DURACION-SUBOPTIMA-ALTA)))))
+
 
 ;;=================================================
 ;;REQUERIMIENTO 6: Informe de Distribución Temporal 
