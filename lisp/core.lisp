@@ -64,6 +64,35 @@
       "Error: El tiempo Unix debe ser un numero entero"))
 
 
+;; ============================================================
+;; REQUERIMIENTO 3: SISTEMA DE AUDITORÍA
+;; ============================================================
+
+;; ============================================================
+;; FUNCIÓN: es-color-valido
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Función Predicado
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun es-color-valido (color)
+  (or (equal color 'en-rojo)
+      (equal color 'en-amarillo)
+      (equal color 'en-verde)))
+
+;; ============================================================
+;; FUNCIÓN: informe
+;; NATURALEZA: Impura (Imprime en pantalla)
+;; ESTRATEGIA DE CONTROL: Secuencial con validación 
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun informe (tiempo-epoch color-anterior color-nuevo)
+  (if (and (integerp tiempo-epoch) 
+           (es-color-valido color-anterior) 
+           (es-color-valido color-nuevo))
+      (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
+              tiempo-epoch color-anterior color-nuevo)
+      "Error: Tipos de datos invalidos para auditoria"))
+
 
 
 
