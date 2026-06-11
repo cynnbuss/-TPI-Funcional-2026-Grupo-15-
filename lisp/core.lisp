@@ -108,15 +108,15 @@
 (defun duracion-ciclo (densidad-trafico)
 
 (let* ((t-rojo 30)
-(t-amarillo 5)
-(t-verde (if (equal densidad-trafico 'ALTA) 45 20))
-(total (+ t-rojo t-verde t-amarillo)))
-(list total
-(cond
-;; Rango óptimo
-((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
-((< total 35) 'DURACION-SUBOPTIMA-BAJA)
-(t 'DURACION-SUBOPTIMA-ALTA)))))
+    (t-amarillo 5)
+    (t-verde (if (equal densidad-trafico 'ALTA) 45 20))
+    (total (+ t-rojo t-verde t-amarillo)))
+    (list total
+        (cond
+        ;; Rango óptimo
+        ((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
+        ((< total 35) 'DURACION-SUBOPTIMA-BAJA)
+        (t 'DURACION-SUBOPTIMA-ALTA)))))
 
 
 ;;=================================================
