@@ -35,7 +35,33 @@
 (defun transicion (color-actual cambiar-a)
    (if (es-transicion-permitida color-actual cambiar-a)
        (list color-actual (accion-color cambiar-a))
-      (list color-actual 'accion-por-defecto)))
+      (list color-actual 'accion-por-defecto))) 
+
+;; ============================================================
+;; REQUERIMIENTO 2: TEMPORIZADOR AUTOMÁTICO
+;; ============================================================
+
+;; ============================================================
+;; FUNCIÓN: ubicar-fase
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Función Predicado 
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun ubicar-fase (resto)
+  (or (and (< resto 90) 'en-rojo)
+      (and (>= resto 90) (< resto 210) 'en-verde)
+      'en-amarillo))
+
+;; ============================================================
+;; FUNCIÓN: timer
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Composición Funcional 
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun timer (tiempo-unix)
+  (if (integerp tiempo-unix)
+      (ubicar-fase (mod tiempo-unix 216))
+      "Error: El tiempo Unix debe ser un numero entero"))
 
 
 
