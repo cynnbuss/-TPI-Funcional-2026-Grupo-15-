@@ -1,3 +1,7 @@
+
+;; Carga de librerias externas (Fase 2)
+(ql:quickload "local-time")
+
 ;; ================================
 ;; REQUERIMIENTO 1: ESTADOS DE TRANSICIÓN
 ;; ================================
@@ -89,9 +93,11 @@
   (if (and (integerp tiempo-epoch) 
            (es-color-valido color-anterior) 
            (es-color-valido color-nuevo))
-      (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
-              tiempo-epoch color-anterior color-nuevo)
-      "Error: Tipos de datos invalidos para auditoria"))
+      (format t "Fecha ~a: la luz ha cambiado de ~a a ~a~%" 
+              (local-time:unix-to-timestamp tiempo-epoch)  ; Uso de libreria local-time  
+               color-anterior
+               color-nuevo)     
+      "Error: Tipos de datos invalidos"))
 
 
 
