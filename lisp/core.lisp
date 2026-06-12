@@ -125,20 +125,75 @@
         (t 'DURACION-SUBOPTIMA-ALTA)))))
 
 
+
+
+
+
+
+
+
 ;;=================================================
 ;;REQUERIMIENTO 6: Informe de Distribución Temporal 
 ;;=================================================
 
 
 
-;;=============================================================
-;;FUNCION:calcular-porcentaje
-;;NATURALEZA:Pura(Calculo matematico sin efectos colaterales)
-;;ESTRATEGIA:Condicional plana
-;;IMPACTO:No destructiva 
-;;=============================================================
 
-(defun calcular-porcentaje(tiempo-color total)
-(if(> total 0)
-   (*(/tiempo-color total)100.0)
-   0))
+;;=================================================
+;;FUNCION:tiempo-total
+;;NATURALEZA:pura
+;;ESTRATEGIA DE CONTROL: Recursividad simple 
+;;IMPACTO EN MEMORIA: No destructiva 
+;; ============================================================
+(defun tiempo-total (historial) 
+  (cond 
+      ((endp historial) 0)
+      (t (+ (cadar historial)
+          (tiempo-total (cdr historial))))))
+
+
+
+
+;; ============================================================ 
+;; FUNCIÓN: tiempo-total-color 
+;; NATURALEZA: Pura (Calcula el tiempo acumulado de un color) 
+;; ESTRATEGIA DE CONTROL: Recursividad 
+;; IMPACTO EN MEMORIA: No destructiva 
+;; ============================================================
+(defun tiempo-total-color (historial color-buscado)
+  (cond 
+    ((endp historial) 0) 
+    ((equal (caar historial) color-buscado)
+     (+ (cadar historial)
+        (tiempo-total-color (cdr historial) color-buscado))) 
+        (t (tiempo-total-color (cdr historial) color-buscado))))
+
+
+
+
+;; ============================================================ 
+;; FUNCIÓN: porcentaje-color 
+;; NATURALEZA: Pura (Calcula el porcentaje correspondiente a un color)
+;; ESTRATEGIA DE CONTROL: Composición funcional con Let e If 
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun porcentaje-color (historial color) 
+  (let ((total (tiempo-total historial)))
+       (if (= total 0) 
+           0.0
+           (float (/ (* (tiempo-total-color historial color) 100) total)))))
+
+
+
+
+;; ============================================================ 
+;; FUNCIÓN: informe-distribucion
+;; NATURALEZA: Pura (Genera el informe porcentual de los colores) 
+;; ESTRATEGIA DE CONTROL: Composición funcional con List 
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun informe-distribucion (historial) 
+  (list 
+   (list 'rojo (porcentaje-color historial 'rojo)) 
+   (list 'amarillo (porcentaje-color historial 'amarillo)) 
+   (list 'verde (porcentaje-color historial 'verde))))
