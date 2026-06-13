@@ -222,7 +222,8 @@
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun informe-distribucion (historial) 
-  (list 
+  (if(listp historial )
+   (list 
    (list 'rojo (porcentaje-color historial 'rojo)) 
    (list 'amarillo (porcentaje-color historial 'amarillo)) 
    (list 'verde (porcentaje-color historial 'verde))))
@@ -230,11 +231,14 @@
 
 
 
-
+;;======================================
 ;; REQUERIMIENTO 7: Casos de Prueba
+;;======================================
 
-;;Requerimiento 1
 
+;;------------------------
+;;Pruebas Requerimiento 1
+;;------------------------
 ;;Resultado Normal: 
 ;;(transicion 'en-rojo 'verde)
 ;;(EN-ROJO "cambiar-a-verde")
@@ -247,8 +251,10 @@
 ;;(transicion 'en-rojo 'amarillo)
 ;;(EN-ROJO ACCION-POR-DEFECTO)
 
-;;Requerimiento 2
 
+;;-----------------------
+;;Prubas Requerimiento 2
+;;-----------------------
 ;;Resultado Normal: 
 ;;(timer 100)
 ;;EN-VERDE
@@ -261,8 +267,10 @@
 ;;(timer '(100))
 ;;"Error: El tiempo Unix debe ser un numero entero" 
 
-;;Requerimiento 3 
 
+;;-----------------------
+;;Prubas Requerimiento 3 
+;;-----------------------
 ;; Resultado Normal:
 ;;(informe 1718254800 'en-rojo 'en-verde)
 ;;Tiempo 1718254800: la luz ha cambiado de EN-ROJO a EN-VERDE
@@ -277,9 +285,85 @@
 
 
 
+;;------------------------
+;;Pruebas Requerimiento 4
+;;------------------------
+
+
+;;------------------------
+;;Pruebas Requerimiento 5
+;;------------------------
+
+;;-------------------------
+;;Pruebas Requerimiento 6
+;;-------------------------
+  
+
+  ;; CASO 1: Funcionamiento normal 
+  ;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
+  
+  ;; Resultado esperado:
+  ;; ((ROJO 41.666668) 
+  ;; (AMARILLO 2.777777) 
+  ;; (VERDE 55.555557))
 
 
 
+  ;; CASO 2: Dos ciclos completos
+  ;;(informe-distribucion 
+  ;;'((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
+  
+  ;; Resultado esperado: 
+  ;; ((ROJO 41.666668) 
+  ;; (AMARILLO 2.777777) 
+  ;; (VERDE 55.555557))
 
 
+  
+  
+  ;; CASO 3: Predomina el rojo
+ ;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
+  
+  ;; Resultado esperado: 
+  ;; ((ROJO 62.5) 
+  ;; (AMARILLO 6.25) 
+  ;; (VERDE 31.25))
 
+  
+  
+  ;; CASO 4: Solo rojo
+  ;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
+
+  ;; Resultado esperado: 
+  ;; ((ROJO 100.0) 
+  ;; (AMARILLO 0.0)
+  ;; (VERDE 0.0))
+
+  
+
+  ;; CASO 5: Solo verde
+  ;;(informe-distribucion '((verde 120) (verde 120)))
+
+  ;; Resultado esperado: 
+  ;; ((ROJO 0.0) 
+  ;; (AMARILLO 0.0) 
+  ;; (VERDE 100.0))
+  
+
+  ;; CASO 6: Historial vacío
+  ;;(informe-distribucion '()) 
+  
+  ;; Resultado esperado: 
+  ;; ((ROJO 0.0) 
+  ;; (AMARILLO 0.0) 
+  ;; (VERDE 0.0))
+
+  
+  ;; CASO 7: Ejemplo que genera error
+  ;;(informe-distribucion 25)
+  ;; Resultado esperado:Error, porque la función espera una lista que represente el historial.
+
+  
+  ;; CASO 8: Formato incorrecto
+  ;;(informe-distribucion '(rojo amarillo verde))
+  ;; Resultado esperado:Error, porque cada elemento del historial debe tener la forma (color tiempo).
