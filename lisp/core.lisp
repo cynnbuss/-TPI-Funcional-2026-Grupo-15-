@@ -48,14 +48,14 @@
 ;; ============================================================
 ;; FUNCIÓN: ubicar-fase
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Función Predicado 
+;; ESTRATEGIA DE CONTROL: Condicional Múltiple  
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun ubicar-fase (resto)
-  (or (and (< resto 90) 'en-rojo)
-      (and (>= resto 90) (< resto 210) 'en-verde)
-      'en-amarillo))
-
+  (cond 
+    ((< resto 90) 'en-rojo)        ;; 0 a 89 segundos
+    ((< resto 210) 'en-verde)      ;; 90 a 209 segundos
+    (t 'en-amarillo)))             ;; 210 a 215 segundos
 ;; ============================================================
 ;; FUNCIÓN: timer
 ;; NATURALEZA: Pura 
@@ -94,10 +94,8 @@
            (es-color-valido color-anterior) 
            (es-color-valido color-nuevo))
       (format t "Fecha ~a: la luz ha cambiado de ~a a ~a~%" 
-              (local-time:unix-to-timestamp tiempo-epoch)  ; Uso de libreria local-time  
-               color-anterior
-               color-nuevo)     
-      "Error: Tipos de datos invalidos"))
+              tiempo-epoch color-anterior color-nuevo)   
+       "Error: Tipos de datos invalidos para auditoria"))
 
 
 
