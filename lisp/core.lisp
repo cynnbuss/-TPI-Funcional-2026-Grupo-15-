@@ -226,3 +226,60 @@
    (list 'rojo (porcentaje-color historial 'rojo)) 
    (list 'amarillo (porcentaje-color historial 'amarillo)) 
    (list 'verde (porcentaje-color historial 'verde))))
+
+
+
+
+
+;; REQUERIMIENTO 7: Casos de Prueba
+
+;;Requerimiento 1
+
+;;Resultado Normal: 
+;;(transicion 'en-rojo 'verde)
+;;(EN-ROJO "cambiar-a-verde")
+
+;; Camino alternativo:
+;;(transicion 'en-verde 'amarillo)
+;;(EN-VERDE "cambiar-a-amarillo")
+
+;; Ejemplo que genera error:
+;;(transicion 'en-rojo 'amarillo)
+;;(EN-ROJO ACCION-POR-DEFECTO)
+
+;;Requerimiento 2
+
+;;Resultado Normal: 
+;;(timer 100)
+;;EN-VERDE
+
+;; Camino alternativo:
+;;(timer 432)
+;;EN-ROJO
+
+;; Ejemplo que genera error:
+;;(timer '(100))
+;;"Error: El tiempo Unix debe ser un numero entero" 
+
+;;Requerimiento 3 
+
+;; Resultado Normal:
+;;(informe 1718254800 'en-rojo 'en-verde)
+;;Tiempo 1718254800: la luz ha cambiado de EN-ROJO a EN-VERDE
+
+;; Camino alternativo:
+;; (informe 1781329260 'en-verde 'en-amarillo)
+;; Tiempo 1781329260: la luz ha cambiado de EN-VERDE a EN-AMARILLO
+
+;; Ejemplo que genera error:
+;; (informe 1781329200 'en-azul 'en-rojo)
+;;"Error: Tipos de datos invalidos para auditoria" 
+
+
+
+
+
+
+
+
+
