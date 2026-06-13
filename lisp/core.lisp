@@ -101,34 +101,48 @@
 
 
 
-;; REQUERIMIENTO 4: ANÁLISIS DE EFICIENCIA Y PSICOLOGÍA
 ;; ============================================================
-
+;; REQUERIMIENTO 4: ANÁLISIS DE CICLOS SEMAFÓRICOS
 ;; ============================================================
 ;; FUNCIÓN: duracion-ciclo
-;; NATURALEZA: Pura (Retorna siempre el mismo análisis para una densidad dada)
-;; ESTRATEGIA DE CONTROL: Condicional con Let*
+;; NATURALEZA: Pura
+;; ESTRATEGIA DE CONTROL: Let
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
-
 (defun duracion-ciclo (densidad-trafico)
+ 
+  (let ((total (+ 30 5 (if (equal densidad-trafico 'ALTA) 45 20))))
+    (list total 
+          (cond 
+            ((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
+            ((< total 35) 'DURACION-SUBOPTIMA-BAJA)
+            (t 'DURACION-SUBOPTIMA-ALTA)))))
 
-(let* ((t-rojo 30)
-    (t-amarillo 5)
-    (t-verde (if (equal densidad-trafico 'ALTA) 45 20))
-    (total (+ t-rojo t-verde t-amarillo)))
-    (list total
-        (cond
-        ;; Rango óptimo
-        ((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
-        ((< total 35) 'DURACION-SUBOPTIMA-BAJA)
-        (t 'DURACION-SUBOPTIMA-ALTA)))))
+;; ============================================================
+;; FUNCIÓN: recomendacion-ciclo
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Condicional (cond)
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun recomendacion-ciclo (duracion)
+  (cond
+    ((< duracion 35) "RECOMENDACION: Incrementar tiempos; ciclos cortos fatigan al usuario.")
+    ((> duracion 150) "RECOMENDACION: Reducir tiempos; esperas largas fomentan infracciones.")
+    (t "RECOMENDACION: Ciclo eficiente segun estandares de ingenieria de trafico.")))
 
-
-
-
-
-
+;; ============================================================
+;; FUNCIÓN: planificar-coordinacion
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Let anidado + TRUNCATE
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun planificar-coordinacion (tiempo-total densidad)
+  (let ((analisis (duracion-ciclo densidad)))
+    (let ((duracion (car analisis)))
+       (list (list 'TOTAL-CICLOS-ESTIMADOS (truncate (/ tiempo-total duracion)))
+             (list 'DURACION-UN-CICLO duracion)
+             (list 'ESTADO-PSICOLOGICO (cadr analisis))
+             (list 'INFORME-TECNICO (recomendacion-ciclo duracion))))))
 
 
 
