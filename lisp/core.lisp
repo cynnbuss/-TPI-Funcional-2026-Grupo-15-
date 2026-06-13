@@ -144,6 +144,23 @@
              (list 'ESTADO-PSICOLOGICO (cadr analisis))
              (list 'INFORME-TECNICO (recomendacion-ciclo duracion))))))
 
+;; ============================================================
+;; REQUERIMIENTO 5: PLANIFICACIÓN TEMPORAL
+;; ============================================================
+;; FUNCIÓN: ciclos-por-tiempo
+;; NATURALEZA: Pura (Retorna el cálculo matemático sin modificar el entorno)
+;; ESTRATEGIA DE CONTROL: Composición Funcional con TRUNCATE
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(defun ciclos-por-tiempo (minutos densidad)
+  
+  (if (and (numberp minutos) (or (equal densidad 'ALTA) (equal densidad 'BAJA)))
+      (let ((segundos-totales (* minutos 60))
+            (duracion-ciclo (+ 30 5 (if (equal densidad 'ALTA) 45 20))))
+        
+        (truncate (/ segundos-totales duracion-ciclo)))
+      "Error: Argumentos invalidos (minutos debe ser numero y densidad ALTA o BAJA)"))
+
 
 
 ;;=================================================
