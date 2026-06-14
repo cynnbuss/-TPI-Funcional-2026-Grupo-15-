@@ -228,7 +228,8 @@
 ;;------------------------
 ;;Pruebas Requerimiento 1
 ;;------------------------
-;;Resultado Normal: 
+
+  
 ;;(transicion 'en-rojo 'verde)
 ;;(EN-ROJO "cambiar-a-verde")
 
@@ -315,35 +316,35 @@
 ;;-------------------------
 ;;Pruebas Requerimiento 6
 ;;-------------------------
-;; CASO 1: Resultado normal 
+;;Resultado normal:
 ;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
 ;; Resultado: ;; ((ROJO 41.666668) (AMARILLO 2.777777) (VERDE 55.555557))
 
-;; CASO 2: Dos ciclos completos
+;; Camino alternativo:
 ;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
 ;; Resultado:((ROJO 41.666668)(AMARILLO 2.777777)(VERDE 55.555557)) 
 
-;; CASO 3: Predomina el rojo
+  
+;; Camino alternativo:
 ;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
 ;; Resultado:((ROJO 62.5) (AMARILLO 6.25) (VERDE 31.25))
-
-;; CASO 4: Solo rojo
+  
+;; Camino alternativo:solo rojo
 ;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
 ;; Resultado: ((ROJO 100.0) (AMARILLO 0.0) (VERDE 0.0))
  
-;; CASO 5: Solo verde
-;;(informe-distribucion '((verde 120) (verde 120)))
+  
+;; Camino alternativo:Solo verde  
+;; Camino alternativo:nforme-distribucion '((verde 120) (verde 120)))
 ;; Resultado:  ((ROJO 0.0) (AMARILLO 0.0) (VERDE 100.0)) 
   
-;; CASO 6: Historial vacío
+;; Historial vacío
 ;;(informe-distribucion '()) 
 ;; Resultado: ((ROJO 0.0) (AMARILLO 0.0) (VERDE 0.0))
 
-;; CASO 7: Ejemplo que genera error
+;; Ejemplo que genera error
 ;;(informe-distribucion 25)
 ;; Resultado:Error, porque la función espera una lista que represente el historial.
-
-;; CASO 8: Formato incorrecto
 
 
 
