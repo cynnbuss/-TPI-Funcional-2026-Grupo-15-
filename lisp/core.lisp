@@ -96,47 +96,44 @@
 
 
 ;; ============================================================
-;; REQUERIMIENTO 4: ANÁLISIS DE CICLOS SEMAFÓRICOS
-;; ============================================================
 ;; FUNCIÓN: duracion-ciclo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA DE CONTROL: Let
+;; ESTRATEGIA DE CONTROL: Condicional Múltiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
-(defun duracion-ciclo (densidad-trafico)
- 
-  (let ((total (+ 30 5 (if (equal densidad-trafico 'ALTA) 45 20))))
-    (list total 
-          (cond 
-            ((and (>= total 35) (<= total 150)) 'RANGO-OPTIMO)
-            ((< total 35) 'DURACION-SUBOPTIMA-BAJA)
-            (t 'DURACION-SUBOPTIMA-ALTA)))))
+
+(defun duracion-ciclo ()
+  (let ((duracion (+ 90 120 6)))
+    (list duracion
+          (cond
+            ((and (>= duracion 35)
+                  (<= duracion 150))
+             'Rango-Optimo)
+
+            ((< duracion 35)
+             'Duracion-baja)
+
+            (t
+             'Duracion-alta)))))
 
 ;; ============================================================
 ;; FUNCIÓN: recomendacion-ciclo
-;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Condicional (cond)
+;; NATURALEZA: Pura
+;; ESTRATEGIA DE CONTROL: Condicional Múltiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
+
 (defun recomendacion-ciclo (duracion)
   (cond
-    ((< duracion 35) "RECOMENDACION: Incrementar tiempos; ciclos cortos fatigan al usuario.")
-    ((> duracion 150) "RECOMENDACION: Reducir tiempos; esperas largas fomentan infracciones.")
-    (t "RECOMENDACION: Ciclo eficiente segun estandares de ingenieria de trafico.")))
+    ((and (>= duracion 35)
+          (<= duracion 150))
+     "Ciclo optimo.")
 
-;; ============================================================
-;; FUNCIÓN: planificar-coordinacion
-;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Let anidado + TRUNCATE
-;; IMPACTO EN MEMORIA: No destructiva
-;; ============================================================
-(defun planificar-coordinacion (tiempo-total densidad)
-  (let ((analisis (duracion-ciclo densidad)))
-    (let ((duracion (car analisis)))
-       (list (list 'TOTAL-CICLOS-ESTIMADOS (truncate (/ tiempo-total duracion)))
-             (list 'DURACION-UN-CICLO duracion)
-             (list 'ESTADO-PSICOLOGICO (cadr analisis))
-             (list 'INFORME-TECNICO (recomendacion-ciclo duracion))))))
+    ((< duracion 35)
+     "Aumentar tiempo.")
+
+    (t
+     "Reducir tiempo.")))
 
 ;; ============================================================
 ;; REQUERIMIENTO 5: PLANIFICACIÓN TEMPORAL
@@ -285,7 +282,33 @@
 ;;Pruebas Requerimiento 4
 ;;------------------------
 
+;; 4.a funcion duracion-ciclo 
+  
+;; Resultado Normal:
+;;(duracion-ciclo)
+;;(216 DURACION-ALTA)
 
+;; Ejemplo que genera error: llamar a la función con argumentos
+;; (duracion-ciclo 100)
+;;se han entregado demasiados argumentos a DURACION-CICLO 
+
+;; 4.b funcion recomendacion-ciclo
+  
+;; Resultado Normal:
+;;(recomendacion-ciclo 90)
+;;"Ciclo optimo."
+  
+;; Camino alternativo:
+;;(recomendacion-ciclo 15) 
+;; "Aumentar tiempo."
+
+;; Ejemplo que genera error:
+;; (recomendacion-ciclo semaforo)
+;; variable SEMAFORO has no value.
+
+
+  
+  
 ;;------------------------
 ;;Pruebas Requerimiento 5
 ;;------------------------
@@ -295,10 +318,10 @@
 ;;-------------------------
   
 
-  ;; CASO 1: Funcionamiento normal 
+  ;; CASO 1: Resultado normal 
   ;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
   
-  ;; Resultado esperado:
+  ;; Resultado:
   ;; ((ROJO 41.666668) 
   ;; (AMARILLO 2.777777) 
   ;; (VERDE 55.555557))
@@ -309,7 +332,7 @@
   ;;(informe-distribucion 
   ;;'((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
   
-  ;; Resultado esperado: 
+  ;; Resultado: 
   ;; ((ROJO 41.666668) 
   ;; (AMARILLO 2.777777) 
   ;; (VERDE 55.555557))
@@ -320,7 +343,7 @@
   ;; CASO 3: Predomina el rojo
  ;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
   
-  ;; Resultado esperado: 
+  ;; Resultado: 
   ;; ((ROJO 62.5) 
   ;; (AMARILLO 6.25) 
   ;; (VERDE 31.25))
@@ -330,7 +353,7 @@
   ;; CASO 4: Solo rojo
   ;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
 
-  ;; Resultado esperado: 
+  ;; Resultado: 
   ;; ((ROJO 100.0) 
   ;; (AMARILLO 0.0)
   ;; (VERDE 0.0))
@@ -340,7 +363,7 @@
   ;; CASO 5: Solo verde
   ;;(informe-distribucion '((verde 120) (verde 120)))
 
-  ;; Resultado esperado: 
+  ;; Resultado: 
   ;; ((ROJO 0.0) 
   ;; (AMARILLO 0.0) 
   ;; (VERDE 100.0))
@@ -349,7 +372,7 @@
   ;; CASO 6: Historial vacío
   ;;(informe-distribucion '()) 
   
-  ;; Resultado esperado: 
+  ;; Resultad: 
   ;; ((ROJO 0.0) 
   ;; (AMARILLO 0.0) 
   ;; (VERDE 0.0))
@@ -357,7 +380,7 @@
   
   ;; CASO 7: Ejemplo que genera error
   ;;(informe-distribucion 25)
-  ;; Resultado esperado:Error, porque la función espera una lista que represente el historial.
+  ;; Resultado:Error, porque la función espera una lista que represente el historial.
 
   
   ;; CASO 8: Formato incorrecto
