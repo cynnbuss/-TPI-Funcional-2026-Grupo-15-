@@ -94,8 +94,10 @@
        "Error: Tipos de datos invalidos para auditoria"))
 
 
-
 ;; ============================================================
+;; REQUERIMIENTO 4: ANALISIS DE CICLOS SEMAFORICOS
+;; ============================================================
+
 ;; FUNCIÓN: duracion-ciclo
 ;; NATURALEZA: Pura
 ;; ESTRATEGIA DE CONTROL: Condicional Múltiple
@@ -138,30 +140,25 @@
 ;; ============================================================
 ;; REQUERIMIENTO 5: PLANIFICACIÓN TEMPORAL
 ;; ============================================================
+
 ;; FUNCIÓN: ciclos-por-tiempo
-;; NATURALEZA: Pura (Retorna el cálculo matemático sin modificar el entorno)
-;; ESTRATEGIA DE CONTROL: Composición Funcional con TRUNCATE
+;; NATURALEZA: Pura 
+;; ESTRATEGIA DE CONTROL: Condicional Simple con TRUNCATE
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
-(defun ciclos-por-tiempo (minutos densidad)
-  
-  (if (and (numberp minutos) (or (equal densidad 'ALTA) (equal densidad 'BAJA)))
-      (let ((segundos-totales (* minutos 60))
-            (duracion-ciclo (+ 30 5 (if (equal densidad 'ALTA) 45 20))))
-        
-        (truncate (/ segundos-totales duracion-ciclo)))
-      "Error: Argumentos invalidos (minutos debe ser numero y densidad ALTA o BAJA)"))
 
+(defun ciclos-por-tiempo (minutos)
+  (if (and (numberp minutos)
+           (>= minutos 0))
+      (truncate (/ (* minutos 60)
+                   (car (duracion-ciclo)))) ;;utilizamos el car de la funcion del punto 4a (el dato 216)
+      "Error: los minutos deben ser un numero positivo"))
 
 
 ;;=================================================
 ;;REQUERIMIENTO 6: Informe de Distribución Temporal 
 ;;=================================================
 
-
-
-
-;;=================================================
 ;;FUNCION:tiempo-total
 ;;NATURALEZA:pura
 ;;ESTRATEGIA DE CONTROL: Recursividad simple 
@@ -228,7 +225,6 @@
 ;; REQUERIMIENTO 7: Casos de Prueba
 ;;======================================
 
-
 ;;------------------------
 ;;Pruebas Requerimiento 1
 ;;------------------------
@@ -260,7 +256,6 @@
 ;;(timer '(100))
 ;;"Error: El tiempo Unix debe ser un numero entero" 
 
-
 ;;-----------------------
 ;;Prubas Requerimiento 3 
 ;;-----------------------
@@ -276,14 +271,10 @@
 ;; (informe 1781329200 'en-azul 'en-rojo)
 ;;"Error: Tipos de datos invalidos para auditoria" 
 
-
-
 ;;------------------------
 ;;Pruebas Requerimiento 4
 ;;------------------------
-
 ;; 4.a funcion duracion-ciclo 
-  
 ;; Resultado Normal:
 ;;(duracion-ciclo)
 ;;(216 DURACION-ALTA)
@@ -293,7 +284,6 @@
 ;;se han entregado demasiados argumentos a DURACION-CICLO 
 
 ;; 4.b funcion recomendacion-ciclo
-  
 ;; Resultado Normal:
 ;;(recomendacion-ciclo 90)
 ;;"Ciclo optimo."
@@ -306,90 +296,54 @@
 ;; (recomendacion-ciclo semaforo)
 ;; variable SEMAFORO has no value.
 
-
-  
-  
 ;;------------------------
 ;;Pruebas Requerimiento 5
 ;;------------------------
+;; Resultado Normal:
+;;(ciclos-por-tiempo 15)
+;; 4; 1/6
+;;Devuelve la cantidad de ciclos completos, la fraccion corresponde al resto de la division realizada por truncate. Solo se utiliza el primer valor.
+  
+;; Camino alternativo:
+;;(ciclos-por-tiempo 30)
+;; 8; 1/3 
+
+;; Ejemplo que genera error:
+;; (ciclos-por-tiempo -1)
+;; "Error: los minutos deben ser un numero positivo"
 
 ;;-------------------------
 ;;Pruebas Requerimiento 6
 ;;-------------------------
+;; CASO 1: Resultado normal 
+;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
+;; Resultado: ;; ((ROJO 41.666668) (AMARILLO 2.777777) (VERDE 55.555557))
+
+;; CASO 2: Dos ciclos completos
+;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
+;; Resultado:((ROJO 41.666668)(AMARILLO 2.777777)(VERDE 55.555557)) 
+
+;; CASO 3: Predomina el rojo
+;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
+;; Resultado:((ROJO 62.5) (AMARILLO 6.25) (VERDE 31.25))
+
+;; CASO 4: Solo rojo
+;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
+;; Resultado: ((ROJO 100.0) (AMARILLO 0.0) (VERDE 0.0))
+ 
+;; CASO 5: Solo verde
+;;(informe-distribucion '((verde 120) (verde 120)))
+;; Resultado:  ((ROJO 0.0) (AMARILLO 0.0) (VERDE 100.0)) 
   
+;; CASO 6: Historial vacío
+;;(informe-distribucion '()) 
+;; Resultado: ((ROJO 0.0) (AMARILLO 0.0) (VERDE 0.0))
 
-  ;; CASO 1: Resultado normal 
-  ;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
-  
-  ;; Resultado:
-  ;; ((ROJO 41.666668) 
-  ;; (AMARILLO 2.777777) 
-  ;; (VERDE 55.555557))
+;; CASO 7: Ejemplo que genera error
+;;(informe-distribucion 25)
+;; Resultado:Error, porque la función espera una lista que represente el historial.
 
-
-
-  ;; CASO 2: Dos ciclos completos
-  ;;(informe-distribucion 
-  ;;'((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
-  
-  ;; Resultado: 
-  ;; ((ROJO 41.666668) 
-  ;; (AMARILLO 2.777777) 
-  ;; (VERDE 55.555557))
-
-
-  
-  
-  ;; CASO 3: Predomina el rojo
- ;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
-  
-  ;; Resultado: 
-  ;; ((ROJO 62.5) 
-  ;; (AMARILLO 6.25) 
-  ;; (VERDE 31.25))
-
-  
-  
-  ;; CASO 4: Solo rojo
-  ;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
-
-  ;; Resultado: 
-  ;; ((ROJO 100.0) 
-  ;; (AMARILLO 0.0)
-  ;; (VERDE 0.0))
-
-  
-
-  ;; CASO 5: Solo verde
-  ;;(informe-distribucion '((verde 120) (verde 120)))
-
-  ;; Resultado: 
-  ;; ((ROJO 0.0) 
-  ;; (AMARILLO 0.0) 
-  ;; (VERDE 100.0))
-  
-
-  ;; CASO 6: Historial vacío
-  ;;(informe-distribucion '()) 
-  
-  ;; Resultad: 
-  ;; ((ROJO 0.0) 
-  ;; (AMARILLO 0.0) 
-  ;; (VERDE 0.0))
-
-  
-  ;; CASO 7: Ejemplo que genera error
-  ;;(informe-distribucion 25)
-  ;; Resultado:Error, porque la función espera una lista que represente el historial.
-
-  
-  ;; CASO 8: Formato incorrecto
-
-
-
-
-
-
+;; CASO 8: Formato incorrecto
 
 
 
