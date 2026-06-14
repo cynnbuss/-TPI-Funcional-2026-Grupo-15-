@@ -1,7 +1,3 @@
-
-;; Carga de librerias externas (Fase 2)
-(ql:quickload "local-time")
-
 ;; ================================
 ;; REQUERIMIENTO 1: ESTADOS DE TRANSICIÓN
 ;; ================================
@@ -365,5 +361,32 @@
 
   
   ;; CASO 8: Formato incorrecto
-  ;;(informe-distribucion '(rojo amarillo verde))
-  ;; Resultado esperado:Error, porque cada elemento del historial debe tener la forma (color tiempo).
+
+
+
+
+
+
+
+
+
+;;FASE 2: Requerimiento 3 con uso de local-time 
+  
+(ql:quickload "local-time")
+
+(defun color-correcto (color)
+  (or (equal color 'en-rojo)
+      (equal color 'en-amarillo)
+      (equal color 'en-verde)))
+
+(defun registrar-cambio (tiempo color-viejo color-nuevo)
+  (if (and (integerp tiempo)
+           (color-correcto color-viejo)
+           (color-correcto color-nuevo))
+      (let ((fecha (local-time:format-timestring nil 
+                      (local-time:unix-to-timestamp tiempo)
+                      :format '((:year 4) "-" (:month 2) "-" (:day 2) " " 
+                                (:hour 2) ":" (:min 2) ":" (:sec 2)))))
+        (format t "Fecha [~a]: la luz cambio de ~a a ~a~%" fecha color-viejo color-nuevo))
+      "Error: datos invalidos"))
+ 
