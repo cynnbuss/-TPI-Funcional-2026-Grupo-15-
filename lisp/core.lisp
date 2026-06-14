@@ -89,7 +89,7 @@
   (if (and (integerp tiempo-epoch) 
            (es-color-valido color-anterior) 
            (es-color-valido color-nuevo))
-      (format t "Fecha ~a: la luz ha cambiado de ~a a ~a~%" 
+      (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
               tiempo-epoch color-anterior color-nuevo)   
        "Error: Tipos de datos invalidos para auditoria"))
 
@@ -98,44 +98,30 @@
 ;; REQUERIMIENTO 4: ANALISIS DE CICLOS SEMAFORICOS
 ;; ============================================================
 
-;; FUNCIÓN: duracion-ciclo
+;; FUNCIÓN 4-a: duracion-ciclo
 ;; NATURALEZA: Pura
 ;; ESTRATEGIA DE CONTROL: Condicional Múltiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
-
-(defun duracion-ciclo ()
-  (let ((duracion (+ 90 120 6)))
-    (list duracion
-          (cond
-            ((and (>= duracion 35)
-                  (<= duracion 150))
-             'Rango-Optimo)
-
-            ((< duracion 35)
-             'Duracion-baja)
-
-            (t
-             'Duracion-alta)))))
+(defun duracion-ciclo (segundos)
+  (cond
+    ((or (not (numberp segundos)) (<= segundos 0)) "Error: La duracion ingresada debe ser un numero positivo");;  Verificamos si no es número o es <= 0
+    ((and (>= segundos 35) (<= segundos 150)) (list segundos 'Rango-Optimo)) ;; Rango Óptimo (entre 35 y 150 segundos) 
+     ((< segundos 35) (list segundos 'Duracion-baja))
+     (t (list segundos 'Duracion-alta))))
 
 ;; ============================================================
-;; FUNCIÓN: recomendacion-ciclo
+;; FUNCIÓN 4-b: recomendacion-ciclo
 ;; NATURALEZA: Pura
 ;; ESTRATEGIA DE CONTROL: Condicional Múltiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
-
 (defun recomendacion-ciclo (duracion)
   (cond
-    ((and (>= duracion 35)
-          (<= duracion 150))
-     "Ciclo optimo.")
-
-    ((< duracion 35)
-     "Aumentar tiempo.")
-
-    (t
-     "Reducir tiempo.")))
+    ((or (not (numberp duracion)) (<= duracion 0)) "Error: La duracion ingresada debe ser un numero positivo")
+    ((and (>= duracion 35) (<= duracion 150))"Recomendacion: Ciclo optimo")
+    ((< duracion 35) "Recomendacion: Aumentar tiempo")
+    (t "Recomendacion: Reducir tiempo")))
 
 ;; ============================================================
 ;; REQUERIMIENTO 5: PLANIFICACIÓN TEMPORAL
@@ -148,10 +134,9 @@
 ;; ============================================================
 
 (defun ciclos-por-tiempo (minutos)
-  (if (and (numberp minutos)
-           (>= minutos 0))
+  (if (and (numberp minutos) (>= minutos 0));;Validamos que minutos sea numero y sea mayor o igual que 0
       (truncate (/ (* minutos 60)
-                   (car (duracion-ciclo)))) ;;utilizamos el car de la funcion del punto 4a (el dato 216)
+                   (car (duracion-ciclo 216)))) ;;utilizamos el car de la funcion del punto 4a 
       "Error: los minutos deben ser un numero positivo"))
 
 
@@ -276,38 +261,43 @@
 ;;Pruebas Requerimiento 4
 ;;------------------------
 ;; 4.a funcion duracion-ciclo 
+  
 ;; Resultado Normal:
-;;(duracion-ciclo)
-;;(216 DURACION-ALTA)
+;;(duracion-ciclo 100)
+;;(100 RANGO-OPTIMO)
 
-;; Ejemplo que genera error: llamar a la función con argumentos
-;; (duracion-ciclo 100)
-;;se han entregado demasiados argumentos a DURACION-CICLO 
+;;Camino alternativo:
+;;(duracion-ciclo 20)
+;;(20 DURACION-BAJA)
+
+;; Ejemplo que genera error: 
+;; (duracion-ciclo -5)
+;;"Error: La duracion ingresada debe ser un numero positivo"
 
 ;; 4.b funcion recomendacion-ciclo
 ;; Resultado Normal:
 ;;(recomendacion-ciclo 90)
-;;"Ciclo optimo."
+;;"Recomendacion: Ciclo optimo"
   
 ;; Camino alternativo:
-;;(recomendacion-ciclo 15) 
-;; "Aumentar tiempo."
+;;(recomendacion-ciclo 200) 
+;;"Recomendacion: Reducir tiempo"
 
 ;; Ejemplo que genera error:
-;; (recomendacion-ciclo semaforo)
-;; variable SEMAFORO has no value.
+;; (recomendacion-ciclo sesenta)
+;; "Error: La duracion ingresada debe ser un numero positivo"
 
 ;;------------------------
 ;;Pruebas Requerimiento 5
 ;;------------------------
 ;; Resultado Normal:
 ;;(ciclos-por-tiempo 15)
-;; 4; 1/6
-;;Devuelve la cantidad de ciclos completos, la fraccion corresponde al resto de la division realizada por truncate. Solo se utiliza el primer valor.
+;; 4
+;;Explicación: 15 minutos equivalen a 900 segundos. 900 / 216 = 4.16. La función truncate devuelve solo la parte entera 4
   
 ;; Camino alternativo:
 ;;(ciclos-por-tiempo 30)
-;; 8; 1/3 
+;; 8
 
 ;; Ejemplo que genera error:
 ;; (ciclos-por-tiempo -1)
