@@ -629,3 +629,74 @@ Luego colocamos la iteración 2 con sus extensiones.
           (segundos-amarillo-hora)))))
 
 
+
+;; ============================================================
+;; REQUERIMIENTO 4: ANALISIS DE CICLOS SEMAFORICOS
+;; ============================================================
+
+;; ============================================================
+;; FUNCIÓN 4-a: duracion-ciclo
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Condicional MUltiple
+;; IMPACTO: No destructiva
+;; ============================================================
+(defun duracion-ciclo (segundos)
+  (cond
+    ((or (not (numberp segundos))
+         (<= segundos 0))
+     "Error: La duracion ingresada debe ser un numero positivo")
+
+    ((and (>= segundos 35)
+          (<= segundos 150))
+     (list segundos 'Rango-Optimo))
+
+    ((< segundos 35)
+     (list segundos 'Duracion-baja))
+
+    (t
+     (list segundos 'Duracion-alta))))
+
+
+;; ============================================================
+;; FUNCION 4-b: recomendacion-ciclo
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Condicional Multiple
+;; IMPACTO: No destructiva
+;; ============================================================
+(defun recomendacion-ciclo (duracion)
+  (cond
+    ((or (not (numberp duracion))
+         (<= duracion 0))
+     "Error: La duracion ingresada debe ser un numero positivo")
+
+    ((and (>= duracion 35)
+          (<= duracion 150))
+     "Recomendacion: Ciclo optimo")
+
+    ((< duracion 35)
+     "Recomendacion: Aumentar tiempo")
+
+    (t
+     "Recomendacion: Reducir tiempo")))
+
+
+;; ============================================================
+;; REQUERIMIENTO 5: PLANIFICACION TEMPORAL
+;; ============================================================
+;; ============================================================
+;; FUNCIÓN: ciclos-por-tiempo
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Condicional Simple con TRUNCATE
+;; IMPACTO: No destructiva
+;; ============================================================
+(defun ciclos-por-tiempo (minutos)
+  (if (and (numberp minutos)
+           (>= minutos 0))
+      (truncate
+       (/ (* minutos 60)
+          225))
+      "Error: los minutos deben ser un numero positivo"))
+
+
+
+
