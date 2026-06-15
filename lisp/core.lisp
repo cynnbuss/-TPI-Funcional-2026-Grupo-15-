@@ -139,70 +139,49 @@
       "Error: los minutos deben ser un numero positivo"))
 
 
-;;=================================================
-;;REQUERIMIENTO 6: Informe de Distribución Temporal 
-;;=================================================
-
-;;FUNCION:tiempo-total
-;;NATURALEZA:pura
-;;ESTRATEGIA DE CONTROL: Recursividad simple 
-;;IMPACTO EN MEMORIA: No destructiva 
 ;; ============================================================
-(defun tiempo-total (historial) 
-  (cond 
-      ((endp historial) 0)
-      (t (+ (cadar historial)
-          (tiempo-total (cdr historial))))))
-
-
-
-
-;; ============================================================ 
-;; FUNCIÓN: tiempo-total-color 
-;; NATURALEZA: Pura (Calcula el tiempo acumulado de un color) 
-;; ESTRATEGIA DE CONTROL: Recursividad 
-;; IMPACTO EN MEMORIA: No destructiva 
+;; REQUERIMIENTO 6: INFORME DE DISTRIBUCIÓN TEMPORAL
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Composición funcional y modularización 
 ;; ============================================================
-(defun tiempo-total-color (historial color-buscado)
-  (cond 
-    ((endp historial) 0) 
-    ((equal (caar historial) color-buscado)
-     (+ (cadar historial)
-        (tiempo-total-color (cdr historial) color-buscado))) 
-        (t (tiempo-total-color (cdr historial) color-buscado))))
 
+;; 1. Funciones base para calcular el ciclo estándar de 216 segundos
+(defun ciclos-hora ()
+  "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
+  (truncate 3600 216))
 
+(defun resto-hora ()
+  "Calcula los segundos sobrantes tras completar los ciclos enteros"
+  (mod 3600 216))
 
+;; 2. Cálculo exacto de segundos por color distribuyendo el resto con MIN/MAX
+(defun segundos-rojo-hora ()
+  "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
+  (+ (* (ciclos-hora) 90)
+     (min (resto-hora) 90)))
 
-;; ============================================================ 
-;; FUNCIÓN: porcentaje-color 
-;; NATURALEZA: Pura (Calcula el porcentaje correspondiente a un color)
-;; ESTRATEGIA DE CONTROL: Composición funcional con Let e If 
-;; IMPACTO EN MEMORIA: No destructiva
-;; ============================================================
-(defun porcentaje-color (historial color) 
-  (let ((total (tiempo-total historial)))
-       (if (= total 0) 
-           0.0
-           (float (/ (* (tiempo-total-color historial color) 100) total)))))
+(defun segundos-verde-hora ()
+  "120 segundos base por ciclo + remanente tras restar la fase roja"
+  (+ (* (ciclos-hora) 120)
+     (min (max (- (resto-hora) 90) 0) 120)))
 
+(defun segundos-amarillo-hora ()
+  "6 segundos base por ciclo + remanente tras restar rojo y verde"
+  (+ (* (ciclos-hora) 6)
+     (min (max (- (resto-hora) 210) 0) 6)))
 
+;; 3. Función auxiliar para calcular el porcentaje final
+(defun calcular-porcentaje (segundos)
+  "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
+  (float (* (/ segundos 3600) 100)))
 
-
-;; ============================================================ 
-;; FUNCIÓN: informe-distribucion
-;; NATURALEZA: Pura (Genera el informe porcentual de los colores) 
-;; ESTRATEGIA DE CONTROL: Composición funcional con List 
-;; IMPACTO EN MEMORIA: No destructiva
-;; ============================================================
-(defun informe-distribucion (historial) 
-  (if(listp historial )
-   (list 
-   (list 'rojo (porcentaje-color historial 'rojo)) 
-   (list 'amarillo (porcentaje-color historial 'amarillo)) 
-   (list 'verde (porcentaje-color historial 'verde))))
-
-
+;; 4. Función principal requerida por el ejercicio
+(defun informe-distribucion-hora ()
+  "Genera el informe porcentual de los tres colores en 1 hora"
+  (list
+   (list 'rojo (calcular-porcentaje (segundos-rojo-hora)))
+   (list 'verde (calcular-porcentaje (segundos-verde-hora)))
+   (list 'amarillo (calcular-porcentaje (segundos-amarillo-hora)))))
 
 
 ;;======================================
@@ -305,35 +284,6 @@
 ;;-------------------------
 ;;Pruebas Requerimiento 6
 ;;-------------------------
-;;Resultado normal:
-;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120))) 
-;; Resultado: ;; ((ROJO 41.666668) (AMARILLO 2.777777) (VERDE 55.555557))
-
-;; Camino alternativo:
-;;(informe-distribucion '((rojo 90) (amarillo 6) (verde 120) (rojo 90) (amarillo 6) (verde 120))) 
-;; Resultado:((ROJO 41.666668)(AMARILLO 2.777777)(VERDE 55.555557)) 
-
-  
-;; Camino alternativo:
-;; (informe-distribucion '((rojo 100) (amarillo 10) (verde 50)))
-;; Resultado:((ROJO 62.5) (AMARILLO 6.25) (VERDE 31.25))
-  
-;; Camino alternativo:solo rojo
-;;(informe-distribucion '((rojo 90) (rojo 90) (rojo 90)))
-;; Resultado: ((ROJO 100.0) (AMARILLO 0.0) (VERDE 0.0))
- 
-  
-;; Camino alternativo:Solo verde  
-;; Camino alternativo:nforme-distribucion '((verde 120) (verde 120)))
-;; Resultado:  ((ROJO 0.0) (AMARILLO 0.0) (VERDE 100.0)) 
-  
-;; Historial vacío
-;;(informe-distribucion '()) 
-;; Resultado: ((ROJO 0.0) (AMARILLO 0.0) (VERDE 0.0))
-
-;; Ejemplo que genera error
-;;(informe-distribucion 25)
-;; Resultado:Error, porque la función espera una lista que represente el historial.
 
 
 
