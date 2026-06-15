@@ -28,6 +28,14 @@
     (and(equal cambiar-a 'en-amarillo) 'cambiar-a-amarillo)
     (and(equal cambiar-a 'amarillo-intermitente)'cambiar-a-amarillo-intermitente)))
 
+;; ============================================================
+;; FUNCIÓN: transicion
+;; NATURALEZA: Pura (solo devuelve una lista)
+;; ESTRATEGIA: Condicional simple
+;; IMPACTO: No destructiva
+;; ============================================================
+
+
 (defun transicion (color-actual cambiar-a)
   (if (es-transicion-permitida color-actual cambiar-a)
       (list color-actual
