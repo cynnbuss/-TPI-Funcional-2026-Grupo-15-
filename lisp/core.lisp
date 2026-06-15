@@ -135,8 +135,7 @@
 
 (defun ciclos-por-tiempo (minutos)
   (if (and (numberp minutos) (>= minutos 0));;Validamos que minutos sea numero y sea mayor o igual que 0
-      (truncate (/ (* minutos 60)
-                   (car (duracion-ciclo 216)))) ;;utilizamos el car de la funcion del punto 4a 
+      (truncate (/ (* minutos 60) 216))
       "Error: los minutos deben ser un numero positivo"))
 
 
