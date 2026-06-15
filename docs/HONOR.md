@@ -1,6 +1,6 @@
 ===================================================================
 
-°Integrante 1: [Nombre y Apellido] 
+°Integrante 1:
 
 °Usuario GitHub: [Usuario]
 
@@ -69,9 +69,9 @@ clasificación en comentarios del código y con mi desempeño en la defensa oral
 
 ===================================================================
 
-°Integrante 1: [Nombre y Apellido] 
+°Integrante 2:Ibalo Pereyra Agustina Beatriz 
 
-°Usuario GitHub: [Usuario]
+°Usuario GitHub: Kimdarkiic-Hausev
 
 
 1. Código en Common Lisp (Fase 1 y 2)
@@ -81,7 +81,7 @@ clasificación en comentarios del código y con mi desempeño en la defensa oral
 grupo sin intervención de IA.
 
 
-● [ ] Asistencia de IA (Co-piloto): Utilicé IA como un tutor o documentación dinámica (búsqueda
+● [X] Asistencia de IA (Co-piloto): Utilicé IA como un tutor o documentación dinámica (búsqueda
 de errores sintácticos, explicación de funciones primitivas), pero la lógica y clasificación del
 semáforo fue estructurada por el grupo.
 
@@ -97,7 +97,7 @@ funciones principales a partir del enunciado base.
 solución de forma autónoma.
 
 
-● [ ] Asistencia de IA: Utilicé la IA para traducir la sintaxis de Lisp al nuevo lenguaje o entender los
+● [X] Asistencia de IA: Utilicé la IA para traducir la sintaxis de Lisp al nuevo lenguaje o entender los
 errores del compilador ajeno.
 
 
@@ -108,7 +108,7 @@ transicion y timer.
 
 3. Redacción del Informe y Respuestas Teóricas
    
-● [ ] Autoría Propia: Las explicaciones de los conceptos de los lenguajes y el análisis comparativo
+● [X] Autoría Propia: Las explicaciones de los conceptos de los lenguajes y el análisis comparativo
 reflejan nuestras propias conclusiones conceptuales.
 
 
@@ -130,7 +130,7 @@ clasificación en comentarios del código y con mi desempeño en la defensa oral
 
 ===================================================================
 
-°Integrante 1: Lovato Buss Cynthia Estefania
+°Integrante 3: Lovato Buss Cynthia Estefania
 
 °Usuario GitHub: cynnbuss
 
