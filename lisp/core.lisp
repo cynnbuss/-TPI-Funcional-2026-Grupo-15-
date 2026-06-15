@@ -1,5 +1,5 @@
 ;; ================================
-;; REQUERIMIENTO 1: ESTADOS DE TRANSICIÓN
+;; REQUERIMIENTO 1: ESTADOS DE TRANSICION
 ;; ================================
 
 ;; FUNCIÓN: es-transicion-permitida
@@ -15,7 +15,7 @@
 
 ;; ================================
 ;; FUNCIÓN: accion-color
-;; NATURALEZA: Pura (devuelve texto basado en el color)
+;; NATURALEZA: Pura
 ;; ESTRATEGIA: Evaluación booleana
 ;; IMPACTO: No destructiva
 ;; ================================
@@ -38,13 +38,13 @@
       (list color-actual 'accion-por-defecto))) 
 
 ;; ============================================================
-;; REQUERIMIENTO 2: TEMPORIZADOR AUTOMÁTICO
+;; REQUERIMIENTO 2: TEMPORIZADOR AUTOMATICO
 ;; ============================================================
 
 ;; ============================================================
 ;; FUNCIÓN: ubicar-fase
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Condicional Múltiple  
+;; ESTRATEGIA DE CONTROL: Condicional Multiple  
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun ubicar-fase (resto)
@@ -55,7 +55,7 @@
 ;; ============================================================
 ;; FUNCIÓN: timer
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Composición Funcional 
+;; ESTRATEGIA DE CONTROL: Composicion Funcional 
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun timer (tiempo-unix)
@@ -71,7 +71,7 @@
 ;; ============================================================
 ;; FUNCIÓN: es-color-valido
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Función Predicado
+;; ESTRATEGIA DE CONTROL: Funcion Predicado
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun es-color-valido (color)
@@ -82,7 +82,7 @@
 ;; ============================================================
 ;; FUNCIÓN: informe
 ;; NATURALEZA: Impura (Imprime en pantalla)
-;; ESTRATEGIA DE CONTROL: Secuencial con validación 
+;; ESTRATEGIA DE CONTROL: Secuencial con validacion 
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun informe (tiempo-epoch color-anterior color-nuevo)
@@ -100,7 +100,7 @@
 
 ;; FUNCIÓN 4-a: duracion-ciclo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA DE CONTROL: Condicional Múltiple
+;; ESTRATEGIA DE CONTROL: Condicional Multiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun duracion-ciclo (segundos)
@@ -113,7 +113,7 @@
 ;; ============================================================
 ;; FUNCIÓN 4-b: recomendacion-ciclo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA DE CONTROL: Condicional Múltiple
+;; ESTRATEGIA DE CONTROL: Condicional Multiple
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
 (defun recomendacion-ciclo (duracion)
@@ -124,7 +124,7 @@
     (t "Recomendacion: Reducir tiempo")))
 
 ;; ============================================================
-;; REQUERIMIENTO 5: PLANIFICACIÓN TEMPORAL
+;; REQUERIMIENTO 5: PLANIFICACION TEMPORAL
 ;; ============================================================
 
 ;; FUNCIÓN: ciclos-por-tiempo
@@ -134,18 +134,18 @@
 ;; ============================================================
 
 (defun ciclos-por-tiempo (minutos)
-  (if (and (numberp minutos) (>= minutos 0));;Validamos que minutos sea numero y sea mayor o igual que 0
+  (if (and (numberp minutos) (>= minutos 0))
       (truncate (/ (* minutos 60) 216))
       "Error: los minutos deben ser un numero positivo"))
 
 
 ;; ============================================================
-;; REQUERIMIENTO 6: INFORME DE DISTRIBUCIÓN TEMPORAL
+;; REQUERIMIENTO 6: INFORME DE DISTRIBUCION TEMPORAL
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA: Composición funcional y modularización 
+;; ESTRATEGIA: Composición funcional y modularizacion 
 ;; ============================================================
 
-;; 1. Funciones base para calcular el ciclo estándar de 216 segundos
+;; 1. Funciones base para calcular el ciclo estandar
 (defun ciclos-hora ()
   "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
   (truncate 3600 216))
@@ -154,7 +154,7 @@
   "Calcula los segundos sobrantes tras completar los ciclos enteros"
   (mod 3600 216))
 
-;; 2. Cálculo exacto de segundos por color distribuyendo el resto con MIN/MAX
+;; 2. Calculo exacto de segundos por color distribuyendo el resto con MIN/MAX
 (defun segundos-rojo-hora ()
   "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
   (+ (* (ciclos-hora) 90)
@@ -170,12 +170,12 @@
   (+ (* (ciclos-hora) 6)
      (min (max (- (resto-hora) 210) 0) 6)))
 
-;; 3. Función auxiliar para calcular el porcentaje final
+;; 3. calcular el porcentaje final
 (defun calcular-porcentaje (segundos)
   "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
   (float (* (/ segundos 3600) 100)))
 
-;; 4. Función principal requerida por el ejercicio
+;; 4. Funcion principal
 (defun informe-distribucion-hora ()
   "Genera el informe porcentual de los tres colores en 1 hora"
   (list
@@ -188,11 +188,8 @@
 ;; REQUERIMIENTO 7: Casos de Prueba
 ;;======================================
 
-;;------------------------
 ;;Pruebas Requerimiento 1
 ;;------------------------
-
-  
 ;;(transicion 'en-rojo 'verde)
 ;;(EN-ROJO "cambiar-a-verde")
 
