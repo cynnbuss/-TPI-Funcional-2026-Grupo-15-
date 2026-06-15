@@ -1,3 +1,13 @@
+
+#| FASE 1:  El problema de los 3 focos. 
+
+Introducción: Con el equipo decidimos comentar la fase 1 con los requerimientos del 1 al 7 
+(Integramos al nucleo la fase 2, primero esta la función original y después la función modificada).
+Luego colocamos la iteración 2 con sus extensiones.
+
+
+(ql:quickload "local-time") ;; cargamos librería "local-time".
+
 ;; ================================
 ;; REQUERIMIENTO 1: ESTADOS DE TRANSICION
 ;; ================================
@@ -47,17 +57,20 @@
 ;; ESTRATEGIA: Condicional Multiple  
 ;; IMPACTO: No destructiva
 ;; ============================================================
+
 (defun ubicar-fase (resto)
   (cond 
     ((< resto 90) 'en-rojo)
     ((< resto 210) 'en-verde) 
     (t 'en-amarillo)))
+
 ;; ============================================================
 ;; FUNCIÓN: timer
 ;; NATURALEZA: Pura 
 ;; ESTRATEGIA: Composicion Funcional 
 ;; IMPACTO: No destructiva
 ;; ============================================================
+
 (defun timer (tiempo-unix)
   (if (integerp tiempo-unix)
       (ubicar-fase (mod tiempo-unix 216))
@@ -74,10 +87,11 @@
 ;; ESTRATEGIA: Funcion Predicado
 ;; IMPACTO: No destructiva
 ;; ============================================================
-(defun es-color-valido (color)
-  (or (equal color 'en-rojo)
-      (equal color 'en-amarillo)
-      (equal color 'en-verde)))
+
+;; (defun es-color-valido (color)
+;; (or (equal color 'en-rojo)
+;;       (equal color 'en-amarillo)
+;;       (equal color 'en-verde)))
 
 ;; ============================================================
 ;; FUNCIÓN: informe
@@ -85,15 +99,40 @@
 ;; ESTRATEGIA: Secuencial con validacion 
 ;; IMPACTO: No destructiva
 ;; ============================================================
-(defun informe (tiempo-epoch color-anterior color-nuevo)
-  (if (and (integerp tiempo-epoch) 
-           (es-color-valido color-anterior) 
-           (es-color-valido color-nuevo))
-      (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
-              tiempo-epoch color-anterior color-nuevo)   
-       "Error: Tipos de datos invalidos para auditoria"))
+
+;; (defun informe (tiempo-epoch color-anterior color-nuevo)
+;;   (if (and (integerp tiempo-epoch) 
+;;            (es-color-valido color-anterior) 
+;;           (es-color-valido color-nuevo))
+;;       (format t "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
+;;               tiempo-epoch color-anterior color-nuevo)   
+;;        "Error: Tipos de datos invalidos para auditoria"))
 
 
+;; ============================================================
+;; FASE 2: Requerimiento 3 con uso de local-time 
+;; ============================================================
+
+(defun color-correcto (color)
+  (or (equal color 'en-rojo)
+      (equal color 'en-amarillo)
+      (equal color 'en-verde)))
+
+(defun registrar-cambio (tiempo color-viejo color-nuevo)
+  (if (and (integerp tiempo)
+           (color-correcto color-viejo)
+           (color-correcto color-nuevo))
+      
+      (let ((fecha (local-time:format-timestring ;;  declaramos una variable llamada Fecha y llamamos a la función format-timestring de local-time
+                    nil ;;  significa que no lo mande a un archivo, sino que devuelva texto 
+                      (local-time:unix-to-timestamp tiempo) ;;  Convertimos el entero tiempo en un objeto timestamp
+                      :format '((:year 4) "-" (:month 2) "-" (:day 2) " " 
+                                (:hour 2) ":" (:min 2) ":" (:sec 2)))))
+           
+        (format t "Tiempo [~a]: la luz cambio de ~a a ~a~%" fecha color-viejo color-nuevo)) ;; Ejecutamos la impresión
+      
+      "Error: datos invalidos")) ;; Si el tiempo no era un entero, o algún color no existía, la función devuelve Error
+ 
 ;; ============================================================
 ;; REQUERIMIENTO 4: ANALISIS DE CICLOS SEMAFORICOS
 ;; ============================================================
@@ -272,6 +311,23 @@
 ;; (informe 1781329200 'en-azul 'en-rojo)
 ;;"Error: Tipos de datos invalidos para auditoria" 
 
+;;-------------------------------
+;;Prubas Fase 2 Requerimiento 3 
+;;-------------------------------
+;; Resultado Normal:
+;; (registrar-cambio 1781524800 'en-rojo 'en-verde)
+;; Tiempo [2026-06-15 12:00:00]: la luz cambio de EN-ROJO a EN-VERDE
+;; NIL
+
+;; Camino alternativo:
+;; (registrar-cambio 0 'en-verde 'en-amarillo)
+;; Tiempo [1970-01-01 00:00:00]: la luz cambio de EN-VERDE a EN-AMARILLO
+;; NIL
+
+;; Ejemplo que genera error:
+;; (registrar-cambio 1781524800 'en-rojo 'en-azul)
+;; "Error: datos invalidos"
+
 ;;------------------------
 ;;Pruebas Requerimiento 4
 ;;------------------------
@@ -333,23 +389,124 @@
 ;;(informe-distribucion-hora 5)
 ;;Error por cantidad incorrecta de argumentos, ya que la función no recibe parámetros.
 
-;;FASE 2: Requerimiento 3 con uso de local-time 
-  
-(ql:quickload "local-time")
+|#
 
-(defun color-correcto (color)
-  (or (equal color 'en-rojo)
-      (equal color 'en-amarillo)
-      (equal color 'en-verde)))
 
-(defun registrar-cambio (tiempo color-viejo color-nuevo)
-  (if (and (integerp tiempo)
-           (color-correcto color-viejo)
-           (color-correcto color-nuevo))
-      (let ((fecha (local-time:format-timestring nil 
-                      (local-time:unix-to-timestamp tiempo)
-                      :format '((:year 4) "-" (:month 2) "-" (:day 2) " " 
-                                (:hour 2) ":" (:min 2) ":" (:sec 2)))))
-        (format t "Fecha [~a]: la luz cambio de ~a a ~a~%" fecha color-viejo color-nuevo))
-      "Error: datos invalidos"))
- 
+;;  ITERACIÓN 2  EXTENSIONES 1 Y 2
+
+;; ============================================================
+;; REQUERIMIENTO 1: ESTADOS DE TRANSICIÓN
+;; ============================================================
+;; ============================================================
+;; FUNCIÓN: es-transicion-permitida
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR y AND
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun es-transicion-permitida (color-actual cambiar-a)
+  (or
+   (and (equal color-actual 'en-rojo) (equal cambiar-a 'amarillo-intermitente))
+   (and (equal color-actual 'amarillo-intermitente) (equal cambiar-a 'en-verde))
+   (and (equal color-actual 'en-verde) (equal cambiar-a 'amarillo-intermitente))
+   (and (equal color-actual 'amarillo-intermitente) (equal cambiar-a 'en-amarillo))
+   (and (equal color-actual 'en-amarillo) (equal cambiar-a 'amarillo-intermitente))
+   (and (equal color-actual 'amarillo-intermitente)(equal cambiar-a 'en-rojo))))
+
+;; ============================================================
+;; FUNCIÓN: accion-color
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR y AND
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun accion-color (cambiar-a)
+  (or
+    (and(equal cambiar-a 'en-rojo) 'cambiar-a-rojo)
+    (and(equal cambiar-a 'en-verde) 'cambiar-a-verde)
+    (and(equal cambiar-a 'en-amarillo) 'cambiar-a-amarillo)
+    (and(equal cambiar-a 'amarillo-intermitente)'cambiar-a-amarillo-intermitente)))
+
+;; ============================================================
+;; FUNCIÓN: transicion
+;; NATURALEZA: Pura (solo devuelve una lista)
+;; ESTRATEGIA: Condicional simple
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun transicion (color-actual cambiar-a)
+  (if (es-transicion-permitida color-actual cambiar-a)
+      (list color-actual (accion-color cambiar-a))
+      (list color-actual 'accion-por-defecto)))
+
+;; ============================================================
+;; REQUERIMIENTO 2: TEMPORIZADOR AUTOMÁTICO
+;; ============================================================
+;; ============================================================
+;; FUNCIÓN: ubicar-fase
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional múltiple
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun ubicar-fase (resto) ;; ciclo ajustado a 225 segundos para incluir las fases de intermitencia de 3 segundos cada una.
+  (cond
+    ((< resto 90) 'en-rojo)
+    ((< resto 93) 'amarillo-intermitente)
+    ((< resto 213) 'en-verde)
+    ((< resto 216) 'amarillo-intermitente)
+    ((< resto 222) 'en-amarillo)
+    ((< resto 225) 'amarillo-intermitente)
+    (t 'fase-invalida)))
+
+;; ============================================================
+;; FUNCIÓN: timer
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional simple
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun timer (tiempo-unix) 
+  (if (integerp tiempo-unix)
+      (ubicar-fase  
+        (mod tiempo-unix 225)) ;; El uso de MOD asegura que el ciclo se reinicie cada 225 segundos
+      'error-tiempo-no-entero))
+
+;; ===========================================================
+;; REQUERIMIENTO 3: SISTEMA DE AUDITORÍA. (Extension 2 de la Iteracion 2)
+;; ============================================================
+;; ============================================================
+;; FUNCIÓN: es-color-valido
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun es-color-valido (color)
+  (or
+   (equal color 'en-rojo)
+   (equal color 'en-verde)
+   (equal color 'en-amarillo)
+   (equal color 'amarillo-intermitente)))
+
+;; ============================================================
+;; FUNCIÓN: informe
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional simple con validación mediante WITH-OPEN-FILE
+;; IMPACTO: No destructiva
+;; ============================================================
+
+(defun informe (tiempo-epoch color-anterior color-nuevo)
+  (if (and (integerp tiempo-epoch) ;; validacion de datos
+           (es-color-valido color-anterior)
+           (es-color-valido color-nuevo))
+
+      (with-open-file ;; se utiliza para la aperturta y cierre autoimatico del archivo te texto 
+          (archivo "informe-ejecucion-semaforo.txt" 
+                  :direction :output ;; modo escritura, define lo que vamos a escribir
+                  :if-exists :append ;; agrega datos al final sin sobrescribir
+                  :if-does-not-exist :create);; crea el archivo si no existe
+
+        (format archivo "Tiempo ~a: cambio de ~a a ~a~%" tiempo-epoch color-anterior color-nuevo))
+  'error-datos-invalidos))
+
