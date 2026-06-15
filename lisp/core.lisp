@@ -44,8 +44,8 @@
 ;; ============================================================
 ;; FUNCIÓN: ubicar-fase
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Condicional Multiple  
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Condicional Multiple  
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun ubicar-fase (resto)
   (cond 
@@ -55,8 +55,8 @@
 ;; ============================================================
 ;; FUNCIÓN: timer
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Composicion Funcional 
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Composicion Funcional 
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun timer (tiempo-unix)
   (if (integerp tiempo-unix)
@@ -71,8 +71,8 @@
 ;; ============================================================
 ;; FUNCIÓN: es-color-valido
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Funcion Predicado
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Funcion Predicado
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun es-color-valido (color)
   (or (equal color 'en-rojo)
@@ -82,8 +82,8 @@
 ;; ============================================================
 ;; FUNCIÓN: informe
 ;; NATURALEZA: Impura (Imprime en pantalla)
-;; ESTRATEGIA DE CONTROL: Secuencial con validacion 
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Secuencial con validacion 
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun informe (tiempo-epoch color-anterior color-nuevo)
   (if (and (integerp tiempo-epoch) 
@@ -100,8 +100,8 @@
 
 ;; FUNCIÓN 4-a: duracion-ciclo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA DE CONTROL: Condicional Multiple
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Condicional Multiple
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun duracion-ciclo (segundos)
   (cond
@@ -113,8 +113,8 @@
 ;; ============================================================
 ;; FUNCIÓN 4-b: recomendacion-ciclo
 ;; NATURALEZA: Pura
-;; ESTRATEGIA DE CONTROL: Condicional Multiple
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Condicional Multiple
+;; IMPACTO: No destructiva
 ;; ============================================================
 (defun recomendacion-ciclo (duracion)
   (cond
@@ -129,8 +129,8 @@
 
 ;; FUNCIÓN: ciclos-por-tiempo
 ;; NATURALEZA: Pura 
-;; ESTRATEGIA DE CONTROL: Condicional Simple con TRUNCATE
-;; IMPACTO EN MEMORIA: No destructiva
+;; ESTRATEGIA: Condicional Simple con TRUNCATE
+;; IMPACTO: No destructiva
 ;; ============================================================
 
 (defun ciclos-por-tiempo (minutos)
@@ -141,39 +141,73 @@
 
 ;; ============================================================
 ;; REQUERIMIENTO 6: INFORME DE DISTRIBUCION TEMPORAL
-;; NATURALEZA: Pura 
-;; ESTRATEGIA: Composición funcional y modularizacion 
 ;; ============================================================
 
 ;; 1. Funciones base para calcular el ciclo estandar
 (defun ciclos-hora ()
   "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
   (truncate 3600 216))
+;; ============================================================
+;; FUNCIÓN:ciclos-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con TRUNCATE
+;; IMPACTO: No destructiva
+;; ============================================================
 
 (defun resto-hora ()
   "Calcula los segundos sobrantes tras completar los ciclos enteros"
   (mod 3600 216))
+;; ============================================================
+;; FUNCIÓN:resto-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con MOD
+;; IMPACTO: No destructiva
+;; ============================================================
 
 ;; 2. Calculo exacto de segundos por color distribuyendo el resto con MIN/MAX
 (defun segundos-rojo-hora ()
   "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
   (+ (* (ciclos-hora) 90)
      (min (resto-hora) 90)))
+;; ============================================================
+;; FUNCIÓN:segundos-rojo-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con operaciones aritméticas y MIN
+;; IMPACTO: No destructiva
+;; ============================================================
 
 (defun segundos-verde-hora ()
   "120 segundos base por ciclo + remanente tras restar la fase roja"
   (+ (* (ciclos-hora) 120)
      (min (max (- (resto-hora) 90) 0) 120)))
+;; ============================================================
+;; FUNCIÓN:segundos-verde-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con operaciones aritméticas, MIN y MAX
+;; IMPACTO: No destructiva
+;; ============================================================
 
 (defun segundos-amarillo-hora ()
   "6 segundos base por ciclo + remanente tras restar rojo y verde"
   (+ (* (ciclos-hora) 6)
      (min (max (- (resto-hora) 210) 0) 6)))
+;; ============================================================
+;; FUNCIÓN:segundos-amarillo-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con operaciones aritméticas, MIN y MAX
+;; IMPACTO: No destructiva
+;; ============================================================
 
 ;; 3. calcular el porcentaje final
 (defun calcular-porcentaje (segundos)
   "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
   (float (* (/ segundos 3600) 100)))
+;; ============================================================
+;; FUNCIÓN:calcular-porcentaje
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional con operaciones aritméticas y FLOAT
+;; IMPACTO: No destructiva
+;; ============================================================
 
 ;; 4. Funcion principal
 (defun informe-distribucion-hora ()
@@ -182,6 +216,12 @@
    (list 'rojo (calcular-porcentaje (segundos-rojo-hora)))
    (list 'verde (calcular-porcentaje (segundos-verde-hora)))
    (list 'amarillo (calcular-porcentaje (segundos-amarillo-hora)))))
+;; ============================================================
+;; FUNCIÓN:informe-distribucion-hora
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional mediante LIST y llamadas a funciones auxiliares
+;; IMPACTO: No destructiva
+;; ============================================================
 
 
 ;;======================================
