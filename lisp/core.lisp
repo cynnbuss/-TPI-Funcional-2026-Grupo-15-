@@ -49,9 +49,9 @@
 ;; ============================================================
 (defun ubicar-fase (resto)
   (cond 
-    ((< resto 90) 'en-rojo)        ;; 0 a 89 segundos
-    ((< resto 210) 'en-verde)      ;; 90 a 209 segundos
-    (t 'en-amarillo)))             ;; 210 a 215 segundos
+    ((< resto 90) 'en-rojo)
+    ((< resto 210) 'en-verde) 
+    (t 'en-amarillo)))
 ;; ============================================================
 ;; FUNCIÓN: timer
 ;; NATURALEZA: Pura 
@@ -105,8 +105,8 @@
 ;; ============================================================
 (defun duracion-ciclo (segundos)
   (cond
-    ((or (not (numberp segundos)) (<= segundos 0)) "Error: La duracion ingresada debe ser un numero positivo");;  Verificamos si no es número o es <= 0
-    ((and (>= segundos 35) (<= segundos 150)) (list segundos 'Rango-Optimo)) ;; Rango Óptimo (entre 35 y 150 segundos) 
+    ((or (not (numberp segundos)) (<= segundos 0)) "Error: La duracion ingresada debe ser un numero positivo")
+    ((and (>= segundos 35) (<= segundos 150)) (list segundos 'Rango-Optimo))
      ((< segundos 35) (list segundos 'Duracion-baja))
      (t (list segundos 'Duracion-alta))))
 
