@@ -5,6 +5,12 @@
 ;; REQUERIMIENTO 1: ESTADOS DE TRANSICIÓN
 ;; ============================================================
 
+;; ============================================================
+;; FUNCIÓN: es-transicion-permitida
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR y AND
+;; IMPACTO: No destructiva
+;; ============================================================
 (defun es-transicion-permitida (color-actual cambiar-a)
   (or
    (and (equal color-actual 'en-rojo)
@@ -21,6 +27,13 @@
         (equal cambiar-a 'en-rojo))))
 
 
+;; ============================================================
+;; FUNCIÓN: accion-color
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR y AND
+;; IMPACTO: No destructiva
+;; ============================================================
+
 (defun accion-color (cambiar-a)
   (or
     (and(equal cambiar-a 'en-rojo) 'cambiar-a-rojo)
@@ -28,14 +41,13 @@
     (and(equal cambiar-a 'en-amarillo) 'cambiar-a-amarillo)
     (and(equal cambiar-a 'amarillo-intermitente)'cambiar-a-amarillo-intermitente)))
 
+
 ;; ============================================================
 ;; FUNCIÓN: transicion
 ;; NATURALEZA: Pura (solo devuelve una lista)
 ;; ESTRATEGIA: Condicional simple
 ;; IMPACTO: No destructiva
 ;; ============================================================
-
-
 (defun transicion (color-actual cambiar-a)
   (if (es-transicion-permitida color-actual cambiar-a)
       (list color-actual
@@ -43,12 +55,19 @@
       (list color-actual
             'accion-por-defecto)))
 
+
 ;; ============================================================
 ;; REQUERIMIENTO 2: TEMPORIZADOR AUTOMÁTICO
 ;; ============================================================
 
- ;; ciclo ajustado a 225 segundos para incluir las fases de intermitencia de 3 segundos cada una.
+;; ============================================================
+;; FUNCIÓN: ubicar-fase
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional múltiple
+;; IMPACTO: No destructiva
+;; ============================================================
 
+ ;; ciclo ajustado a 225 segundos para incluir las fases de intermitencia de 3 segundos cada una.
 (defun ubicar-fase (resto)
   (cond
     ((< resto 90) 'en-rojo)
@@ -58,26 +77,45 @@
     ((< resto 222) 'en-amarillo)
     ((< resto 225) 'amarillo-intermitente)
     (t 'fase-invalida)))
-
 ;; (mod tiempo-unix 225) asegura que el ciclo se repita cada 225 segundos.
 
+;; ============================================================
+;; FUNCIÓN: timer
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional simple
+;; IMPACTO: No destructiva
+;; ============================================================
 (defun timer (tiempo-unix) 
   (if (integerp tiempo-unix)
       (ubicar-fase 
         (mod tiempo-unix 225))
       'error-tiempo-no-entero))
 
-
-;; ============================================================
+;; ===========================================================
 ;; REQUERIMIENTO 3: SISTEMA DE AUDITORÍA. (Extension 2 de la Iteracion 2)
 ;; ============================================================
 
+
+;; ============================================================
+;; FUNCIÓN: es-color-valido
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Evaluación booleana mediante OR
+;; IMPACTO: No destructiva
+;; ============================================================
 (defun es-color-valido (color)
   (or
    (equal color 'en-rojo)
    (equal color 'en-verde)
    (equal color 'en-amarillo)
    (equal color 'amarillo-intermitente)))
+
+
+;; ============================================================
+;; FUNCIÓN: informe
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Condicional simple (IF) con validación y persistencia mediante WITH-OPEN-FILE
+;; IMPACTO: No destructiva
+;; ============================================================
 
 ;; validacion de datos
 (defun informe (tiempo-epoch color-anterior color-nuevo)
@@ -94,6 +132,7 @@
         (format archivo "Fecha ~a: cambio de ~a a ~a~%" tiempo-epoch color-anterior color-nuevo))
   'error-datos-invalidos))
 
+
 ;; ============================================================
 ;; REQUERIMIENTO 4: ANALISIS DE CICLOS SEMAFORICOS
 ;; ============================================================
@@ -104,7 +143,6 @@
 ;; ESTRATEGIA: Condicional MUltiple
 ;; IMPACTO: No destructiva
 ;; ============================================================
-
 (defun duracion-ciclo (segundos)
   (cond
     ((or (not (numberp segundos))
@@ -128,7 +166,6 @@
 ;; ESTRATEGIA: Condicional Multiple
 ;; IMPACTO: No destructiva
 ;; ============================================================
-
 (defun recomendacion-ciclo (duracion)
   (cond
     ((or (not (numberp duracion))
@@ -149,14 +186,12 @@
 ;; ============================================================
 ;; REQUERIMIENTO 5: PLANIFICACION TEMPORAL
 ;; ============================================================
-
 ;; ============================================================
 ;; FUNCIÓN: ciclos-por-tiempo
 ;; NATURALEZA: Pura
 ;; ESTRATEGIA: Condicional Simple con TRUNCATE
 ;; IMPACTO: No destructiva
 ;; ============================================================
-
 (defun ciclos-por-tiempo (minutos)
   (if (and (numberp minutos)
            (>= minutos 0))
@@ -167,96 +202,100 @@
 
 
 
-
 ;; ============================================================
 ;; REQUERIMIENTO 6: INFORME DE DISTRIBUCIÓN TEMPORAL
 ;; ============================================================
 
-;; 1. Funciones base para calcular el ciclo estándar de 225 segundos
-(defun ciclos-hora ()
-  "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
-  (truncate 3600 225))
 ;;========================================================
 ;; FUNCIÓN:ciclos-hora
 ;; NATURALEZA:  Pura
 ;; ESTRATEGIA : Composicion funcional mediante truncate
 ;; IMPACTO: no destructiva 
 ;;=========================================================
+;; 1. Funciones base para calcular el ciclo estándar de 225 segundos
+(defun ciclos-hora ()
+  "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
+  (truncate 3600 225))
 
 
-(defun resto-hora ()
-  "Calcula los segundos sobrantes tras completar los ciclos enteros"
-  (mod 3600 225))
 ;;========================================================
 ;; FUNCIÓN: resto-hora
 ;; NATURALEZA:pura
 ;; ESTRATEGIA : composicion funcionalmediante MOD
 ;; IMPACTO: no destructiva
 ;;=========================================================
+(defun resto-hora ()
+  "Calcula los segundos sobrantes tras completar los ciclos enteros"
+  (mod 3600 225))
 
 
-;; 2. Cálculo exacto de segundos por color distribuyendo el resto con MIN/MAX
-(defun segundos-rojo-hora ()
-  "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
-  (+ (* (ciclos-hora) 90)
-     (min (resto-hora) 90)))
 ;;========================================================
 ;; FUNCIÓN: segundos-rojo-hora 
 ;; NATURALEZA: pura
 ;; ESTRATEGIA : composicion funcional utilizando operaciones aritmeticas y MIN
 ;; IMPACTO: no destructiva 
 ;;=========================================================
+;; 2. Cálculo exacto de segundos por color distribuyendo el resto con MIN/MAX
+(defun segundos-rojo-hora ()
+  "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
+  (+ (* (ciclos-hora) 90)
+     (min (resto-hora) 90)))
 
 
-(defun segundos-intermitente-hora ()
-  "9 segundos base por ciclo (3+3+3) + el remanente"
-  (+ (* (ciclos-hora) 9)
-     (min (max (- (resto-hora) 90) 0) 9)))
 ;;========================================================
 ;; FUNCIÓN: segundos-intermitente-hora
 ;; NATURALEZA:Pura
 ;; ESTRATEGIA: Composición funcional utilizando operaciones aritméticas, MIN y MAX
 ;; IMPACTO: no destructiva 
 ;;=========================================================
+(defun segundos-intermitente-hora ()
+  "9 segundos base por ciclo (3+3+3) + el remanente"
+  (+ (* (ciclos-hora) 9)
+     (min (max (- (resto-hora) 90) 0) 9)))
 
 
-(defun segundos-verde-hora ()
-  "120 segundos base por ciclo + remanente tras restar rojo e intermitencia"
-  (+ (* (ciclos-hora) 120)
-     (min (max (- (resto-hora) 99) 0) 120)))
 ;;========================================================
 ;; FUNCIÓN:segundos-verde-hora 
 ;; NATURALEZA:Pura
 ;; ESTRATEGIA:Composición funcional utilizando operaciones aritméticas, MIN y MAX
 ;; IMPACTO:No destructiva
 ;;=========================================================
+(defun segundos-verde-hora ()
+  "120 segundos base por ciclo + remanente tras restar rojo e intermitencia"
+  (+ (* (ciclos-hora) 120)
+     (min (max (- (resto-hora) 99) 0) 120)))
 
 
-(defun segundos-amarillo-hora ()
-  "6 segundos base por ciclo + remanente tras restar rojo, intermitencia y verde"
-  (+ (* (ciclos-hora) 6)
-     (min (max (- (resto-hora) 219) 0) 6)))
 ;;========================================================
 ;; FUNCIÓN: segundos-amarillo-hora
 ;; NATURALEZA:Pura 
 ;; ESTRATEGIA: Composición funcional utilizando operaciones aritméticas, MIN y MAX
 ;; IMPACTO:No destructiva 
 ;;=========================================================
+(defun segundos-amarillo-hora ()
+  "6 segundos base por ciclo + remanente tras restar rojo, intermitencia y verde"
+  (+ (* (ciclos-hora) 6)
+     (min (max (- (resto-hora) 219) 0) 6)))
 
 
-;; 3. Función auxiliar para calcular el porcentaje final
-
-(defun calcular-porcentaje (segundos)
-  "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
-  (float (* (/ segundos 3600) 100)))
 ;;========================================================
 ;; FUNCIÓN:  calcular-porcentaje
 ;; NATURALEZA: Pura
 ;; ESTRATEGIA:Composición funcional mediante operaciones aritméticas y conversión con FLOAT. 
 ;; IMPACTO: No destructiva
 ;;=========================================================
+;; 3. Función auxiliar para calcular el porcentaje final
+(defun calcular-porcentaje (segundos)
+  "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
+  (float (* (/ segundos 3600) 100)))
 
 
+;;==========================================================================================================
+;; FUNCIÓN: informe-distribucion-hora 
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional mediante construcción de listas (LIST) y llamadas a funciones auxiliares.
+;; IMPACTO: No destructiva.
+;;==========================================================================================================
 ;; 4. Función principal requerida por el ejercicio
 (defun informe-distribucion-hora ()
   "Genera el informe porcentual de los colores en 1 hora"
@@ -276,12 +315,7 @@
    (list 'amarillo
          (calcular-porcentaje
           (segundos-amarillo-hora)))))
-;;========================================================
-;; FUNCIÓN: informe-distribucion-hora 
-;; NATURALEZA: Pura
-;; ESTRATEGIA:Composición funcional mediante construcción de listas (LIST) y llamadas a funciones auxiliares.
-;; IMPACTO: No destructiva.
-;;=========================================================
+
 
 
 
