@@ -510,3 +510,122 @@ Luego colocamos la iteración 2 con sus extensiones.
         (format archivo "Tiempo ~a: cambio de ~a a ~a~%" tiempo-epoch color-anterior color-nuevo))
   'error-datos-invalidos))
 
+
+
+
+
+;; ============================================================
+;; REQUERIMIENTO 6: INFORME DE DISTRIBUCIÓN TEMPORAL
+;; ============================================================
+
+;;========================================================
+;; FUNCIÓN:ciclos-hora
+;; NATURALEZA:  Pura
+;; ESTRATEGIA : Composicion funcional mediante truncate
+;; IMPACTO: no destructiva 
+;;=========================================================
+;; 1. Funciones base para calcular el ciclo estándar de 225 segundos
+(defun ciclos-hora ()
+  "Calcula la cantidad de ciclos enteros que entran en 1 hora (3600s)"
+  (truncate 3600 225))
+
+
+;;========================================================
+;; FUNCIÓN: resto-hora
+;; NATURALEZA:pura
+;; ESTRATEGIA : composicion funcionalmediante MOD
+;; IMPACTO: no destructiva
+;;=========================================================
+(defun resto-hora ()
+  "Calcula los segundos sobrantes tras completar los ciclos enteros"
+  (mod 3600 225))
+
+
+;;========================================================
+;; FUNCIÓN: segundos-rojo-hora 
+;; NATURALEZA: pura
+;; ESTRATEGIA : composicion funcional utilizando operaciones aritmeticas y MIN
+;; IMPACTO: no destructiva 
+;;=========================================================
+;; 2. Cálculo exacto de segundos por color distribuyendo el resto con MIN/MAX
+(defun segundos-rojo-hora ()
+  "90 segundos base por ciclo + el remanente (hasta 90s máximos)"
+  (+ (* (ciclos-hora) 90)
+     (min (resto-hora) 90)))
+
+
+;;========================================================
+;; FUNCIÓN: segundos-intermitente-hora
+;; NATURALEZA:Pura
+;; ESTRATEGIA: Composición funcional utilizando operaciones aritméticas, MIN y MAX
+;; IMPACTO: no destructiva 
+;;=========================================================
+(defun segundos-intermitente-hora ()
+  "9 segundos base por ciclo (3+3+3) + el remanente"
+  (+ (* (ciclos-hora) 9)
+     (min (max (- (resto-hora) 90) 0) 9)))
+
+
+;;========================================================
+;; FUNCIÓN:segundos-verde-hora 
+;; NATURALEZA:Pura
+;; ESTRATEGIA:Composición funcional utilizando operaciones aritméticas, MIN y MAX
+;; IMPACTO:No destructiva
+;;=========================================================
+(defun segundos-verde-hora ()
+  "120 segundos base por ciclo + remanente tras restar rojo e intermitencia"
+  (+ (* (ciclos-hora) 120)
+     (min (max (- (resto-hora) 99) 0) 120)))
+
+
+;;========================================================
+;; FUNCIÓN: segundos-amarillo-hora
+;; NATURALEZA:Pura 
+;; ESTRATEGIA: Composición funcional utilizando operaciones aritméticas, MIN y MAX
+;; IMPACTO:No destructiva 
+;;=========================================================
+(defun segundos-amarillo-hora ()
+  "6 segundos base por ciclo + remanente tras restar rojo, intermitencia y verde"
+  (+ (* (ciclos-hora) 6)
+     (min (max (- (resto-hora) 219) 0) 6)))
+
+
+;;========================================================
+;; FUNCIÓN:  calcular-porcentaje
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional mediante operaciones aritméticas y conversión con FLOAT. 
+;; IMPACTO: No destructiva
+;;=========================================================
+;; 3. Función auxiliar para calcular el porcentaje final
+(defun calcular-porcentaje (segundos)
+  "Convierte los segundos totales de un color en porcentaje sobre 1 hora"
+  (float (* (/ segundos 3600) 100)))
+
+
+;;==========================================================================================================
+;; FUNCIÓN: informe-distribucion-hora 
+;; NATURALEZA: Pura
+;; ESTRATEGIA:Composición funcional mediante construcción de listas (LIST) y llamadas a funciones auxiliares.
+;; IMPACTO: No destructiva.
+;;==========================================================================================================
+;; 4. Función principal requerida por el ejercicio
+(defun informe-distribucion-hora ()
+  "Genera el informe porcentual de los colores en 1 hora"
+  (list
+   (list 'rojo
+         (calcular-porcentaje
+          (segundos-rojo-hora)))
+
+   (list 'amarillo-intermitente
+         (calcular-porcentaje
+          (segundos-intermitente-hora)))
+
+   (list 'verde
+         (calcular-porcentaje
+          (segundos-verde-hora)))
+
+   (list 'amarillo
+         (calcular-porcentaje
+          (segundos-amarillo-hora)))))
+
+
