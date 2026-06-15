@@ -284,8 +284,17 @@
 ;;-------------------------
 ;;Pruebas Requerimiento 6
 ;;-------------------------
+;; Resultado Normal:
+;;(informe-distribucion-hora)
+;;devuelve una lista con el porcentaje correspondiente a cada color durante una hora.
 
+;; Camino alternativo:
+;;(resto hora)
+;;144
 
+;; Ejemplo que genera error:
+;;(informe-distribucion-hora 5)
+;;Error por cantidad incorrecta de argumentos, ya que la función no recibe parámetros.
 
 ;;FASE 2: Requerimiento 3 con uso de local-time 
   
