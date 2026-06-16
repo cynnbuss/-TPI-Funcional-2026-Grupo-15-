@@ -379,15 +379,11 @@ Luego colocamos la iteración 2 con sus extensiones.
 ;;-------------------------
 ;; Resultado Normal:
 ;;(informe-distribucion-hora)
-;;devuelve una lista con el porcentaje correspondiente a cada color durante una hora.
-
-;; Camino alternativo:
-;;(resto hora)
-;;144
+;;((ROJO 42.5) (VERDE 54.833332) (AMARILLO 2.6666667))
 
 ;; Ejemplo que genera error:
 ;;(informe-distribucion-hora 5)
-;;Error por cantidad incorrecta de argumentos, ya que la función no recibe parámetros.
+;;Error cantidad incorrecta de argumentos.
 
 |#
 
