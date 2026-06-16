@@ -15,6 +15,27 @@
 ;; y la comunidad de software libre a través de GIMP 
 ;;(utiliza una variante llamada TinyScheme para sus plugins Script-Fu). 
 
+;; ============================================================
+;; FUNCIÓN: es-transicion-permitida?
+;; NATURALEZA: Pura (Retorna un booleano sin efectos secundarios)
+;; ESTRATEGIA: Función predicado (Usa la convención '?' de Scheme)
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(define (es-transicion-permitida? color-actual cambiar-a)
+  (or (and (equal? color-actual 'en-rojo) (equal? cambiar-a 'verde))
+      (and (equal? color-actual 'en-verde) (equal? cambiar-a 'amarillo))
+      (and (equal? color-actual 'en-amarillo) (equal? cambiar-a 'rojo))))
+
+;; ============================================================
+;; FUNCIÓN: accion-color
+;; NATURALEZA: Pura
+;; ESTRATEGIA: Evaluación booleana (Selección por cortocircuito)
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(define (accion-color cambiar-a)
+  (or (and (equal? cambiar-a 'rojo) "cambiar-a-rojo")
+      (and (equal? cambiar-a 'amarillo) "cambiar-a-amarillo")
+      (and (equal? cambiar-a 'verde) "cambiar-a-verde")))
 
 ;; ============================================================
 ;; FUNCIÓN: transicion
