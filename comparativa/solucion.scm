@@ -15,13 +15,31 @@
 ;; y la comunidad de software libre a través de GIMP 
 ;;(utiliza una variante llamada TinyScheme para sus plugins Script-Fu). 
 
+
 ;; ============================================================
 ;; FUNCIÓN: transicion
 ;; NATURALEZA: Pura (Retorna un estado sin efectos secundarios)
 ;; ESTRATEGIA: Condicional Simple (Adaptada de Common Lisp)
 ;; IMPACTO EN MEMORIA: No destructiva
 ;; ============================================================
+(define (transicion color-actual cambiar-a)
+  ;; En Scheme los predicados terminan convencionalmente en '?'
+  ;; y se utiliza 'equal?' para igualdad estructural [Parte 2]
+  (if (es-transicion-permitida? color-actual cambiar-a)
+      (list color-actual (accion-color cambiar-a))
+      (list color-actual 'accion-por-defecto)))
 
+;; ============================================================
+;; FUNCIÓN: timer
+;; NATURALEZA: Pura 
+;; ESTRATEGIA: Composición Funcional
+;; IMPACTO EN MEMORIA: No destructiva
+;; ============================================================
+(define (timer tiempo-unix)
+  ;; Se utiliza 'integer?' y 'modulo' (equivalente a MOD en Lisp)
+  (if (integer? tiempo-unix)
+      (ubicar-fase (modulo tiempo-unix 216))
+      "Error: El tiempo Unix debe ser un numero entero"))
 
 
 
