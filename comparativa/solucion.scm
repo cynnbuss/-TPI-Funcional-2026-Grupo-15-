@@ -65,9 +65,7 @@
 
 (define (ubicar-fase resto)
   (cond
-    ((< resto 90) 'en-rojo)
-    ((< resto 210) 'en-verde)
-    (else 'en-amarillo)))
+    ((< resto 90) 'en-rojo) ((< resto 210) 'en-verde) (else 'en-amarillo)))
 
 
 
