@@ -13,7 +13,8 @@
 ;; Google: Fue utilizado históricamente en el motor de App Inventor
 ;;Cisco (utiliza Scheme en procesos de control de calidad y herramientas internas), ;;Google (históricamente en App Inventor) 
 ;; y la comunidad de software libre a través de GIMP 
-;;(utiliza una variante llamada TinyScheme para sus plugins Script-Fu). 
+;;utiliza una variante llamada TinyScheme para sus plugins Script-Fu
+;;una implementación ultraligera y de software libre del lenguaje de programación Scheme
 
 ;; ============================================================
 ;; FUNCIÓN: es-transicion-permitida?
