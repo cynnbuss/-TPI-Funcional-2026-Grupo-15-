@@ -46,7 +46,7 @@
 ;; ============================================================
 (define (transicion color-actual cambiar-a)
   ;; En Scheme los predicados terminan convencionalmente en '?'
-  ;; y se utiliza 'equal?' para igualdad estructural [Parte 2]
+  ;; y se utiliza 'equal?' para igualdad estructural
   (if (es-transicion-permitida? color-actual cambiar-a)
       (list color-actual (accion-color cambiar-a))
       (list color-actual 'accion-por-defecto)))
