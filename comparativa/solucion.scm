@@ -63,6 +63,12 @@
       (ubicar-fase (modulo tiempo-unix 216))
       "Error: El tiempo Unix debe ser un numero entero"))
 
+(define (ubicar-fase resto)
+  (cond
+    ((< resto 90) 'en-rojo)
+    ((< resto 210) 'en-verde)
+    (else 'en-amarillo)))
+
 
 
 
