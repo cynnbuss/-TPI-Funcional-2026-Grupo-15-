@@ -487,28 +487,28 @@ Luego colocamos la iteración 2 con sus extensiones.
 
 ;; ============================================================
 ;; FUNCIÓN: informe
-;; NATURALEZA: Pura 
-;; ESTRATEGIA: Condicional simple con validación mediante WITH-OPEN-FILE
+;; NATURALEZA: Impura 
+;; ESTRATEGIA: Iterativa y Condicional
 ;; IMPACTO: No destructiva
 ;; ============================================================
 
-(defun informe (tiempo-epoch color-anterior color-nuevo)
-  (if (and (integerp tiempo-epoch) ;; validacion de datos
-           (es-color-valido color-anterior)
-           (es-color-valido color-nuevo))
-
-      (with-open-file ;; se utiliza para la aperturta y cierre autoimatico del archivo te texto 
-          (archivo "informe-ejecucion-semaforo.txt" 
-                  :direction :output ;; modo escritura, define lo que vamos a escribir
-                  :if-exists :append ;; agrega datos al final sin sobrescribir
-                  :if-does-not-exist :create);; crea el archivo si no existe
-
-        (format archivo "Tiempo ~a: cambio de ~a a ~a~%" tiempo-epoch color-anterior color-nuevo))
-  'error-datos-invalidos))
-
-
-
-
+(defun informe (datos)
+  (with-open-file (stream "informe-ejecucion-semaforo.txt" 
+                          :direction :output 
+                          :if-exists :supersede 
+                          :if-does-not-exist :create)
+    (format stream "Informe de Ejecución del Sistema Semafórico~%")
+    (format stream "================================================~%")
+    (mapcar #'(lambda (registro)
+                (if (and (integerp (car registro)) 
+                         (es-color-valido (cadr registro)) 
+                         (es-color-valido (caddr registro)))
+                    (format stream "Tiempo ~a: la luz ha cambiado de ~a a ~a~%" 
+                            (car registro) (cadr registro) (caddr registro))
+                    (format stream "Error en registro: Tipos de datos inválidos -> ~a~%" registro)))
+            datos) 
+    (format stream "================================================~%")
+    (format stream "~% --- Fin del Informe ---~%")))
 
 
 ;; ============================================================
